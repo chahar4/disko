@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"log"
+
+	"github.com/PatrochR/disko/db"
+)
 
 func main() {
-	fmt.Println("Hello world")
+	_, err := db.NewDatabase()
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
+
