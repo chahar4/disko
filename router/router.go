@@ -21,6 +21,7 @@ func NewRouter(Adder string, Engine *gin.Engine, userHandler *user.Handler) *Rou
 
 func (r *Router) Start() error {
 	r.Engine.POST("/user/register", r.userHandler.Register)
+	r.Engine.POST("/user/login", r.userHandler.Login)
 
 	return r.Engine.Run(r.Adder)
 }

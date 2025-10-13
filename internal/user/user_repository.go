@@ -6,10 +6,10 @@ import (
 )
 
 type DBTX interface {
-	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
+	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
 	PrepareContext(context.Context, string) (*sql.Stmt, error)
-	QueryContext(context.Context, string, ...interface{}) (*sql.Rows, error)
-	QueryRowContext(context.Context, string, ...interface{}) *sql.Row
+	QueryContext(context.Context, string, ...any) (*sql.Rows, error)
+	QueryRowContext(context.Context, string, ...any) *sql.Row
 }
 
 type repository struct {
@@ -32,4 +32,15 @@ func (r *repository) AddUser(ctx context.Context, user *User) (*User, error) {
 	}
 	user.ID = lastIdInserted
 	return user, nil
+}
+
+func (r *repository) GetUserByEmail(ctx context.Context, email string) (*User, error) {
+
+	query := "SELECT id,email,password,username FROM users WHERE email = $1"
+	var user User
+	err := r.db.QueryRowContext(ctx, query, email).Scan(&user.ID, &user.Email, &user.Password, &user.Username)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
