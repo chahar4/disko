@@ -5,23 +5,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Router struct {
-	Adder       string
-	Engine      *gin.Engine
-	userHandler *user.Handler
+var r *gin.Engine
+
+
+func InitRouter(userHandler *user.Handler) {
+	r = gin.Default()
+
+	r.POST("/user/register", userHandler.Register)
+	r.POST("/user/login", userHandler.Login)
 }
 
-func NewRouter(Adder string, Engine *gin.Engine, userHandler *user.Handler) *Router {
-	return &Router{
-		Adder:       Adder,
-		Engine:      Engine,
-		userHandler: userHandler,
-	}
-}
-
-func (r *Router) Start() error {
-	r.Engine.POST("/user/register", r.userHandler.Register)
-	r.Engine.POST("/user/login", r.userHandler.Login)
-
-	return r.Engine.Run(r.Adder)
+func Start(adder string) error{
+	return r.Run(adder)
 }

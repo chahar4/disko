@@ -64,7 +64,7 @@ func (s *service) Login(c context.Context, req *LoginUserReq) (*LoginUserRes, er
 		return &LoginUserRes{}, err
 	}
 
-	if err := util.CheckPassword(req.Password, user.Password); err != nil {
+	if err := util.CheckPassword(user.Password, req.Password); err != nil {
 		return &LoginUserRes{}, err
 	}
 

@@ -6,7 +6,6 @@ import (
 	"github.com/PatrochR/disko/db"
 	"github.com/PatrochR/disko/internal/user"
 	"github.com/PatrochR/disko/router"
-	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
@@ -25,10 +24,8 @@ func main() {
 	userService := user.NewService(userRepo)
 	userHandler := user.NewHandler(userService)
 
-	gin := gin.New()
-	router := router.NewRouter(":8008", gin, userHandler)
-
-	if err := router.Start(); err != nil {
+	router.InitRouter(userHandler)
+	if err := router.Start(":8080"); err != nil {
 		log.Fatal(err)
 	}
 }
