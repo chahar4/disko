@@ -47,8 +47,6 @@ func (s *service) AddUser(ctx context.Context, req *AddUserReq) (*AddUserRes, er
 	}, nil
 }
 
-
-
 type CustomeClaim struct {
 	ID       string `json:"id"`
 	Username string `json:"username"`
@@ -91,3 +89,18 @@ func (s *service) Login(c context.Context, req *LoginUserReq) (*LoginUserRes, er
 	}, nil
 }
 
+func (s *service) GetAllUsersByGuildID(ctx context.Context, guildID int) (*[]GetAllUserRes, error) {
+	c, cancel := context.WithTimeout(ctx, s.timeout)
+	defer cancel()
+
+	users, err := s.repository.GetAllUsersByGuildID(c, guildID)
+	if err != nil {
+		return nil, err
+	}
+
+	var res []GetAllUserRes
+	for _, u := range *users {
+		res = append(res, u.ToGetAllUserRes())
+	}
+	return &res, nil
+}

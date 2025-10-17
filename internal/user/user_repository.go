@@ -44,3 +44,20 @@ func (r *repository) GetUserByEmail(ctx context.Context, email string) (*User, e
 	}
 	return &user, nil
 }
+
+func (r *repository) GetAllUsersByGuildID(ctx context.Context, guildID int) (*[]User, error) {
+	query := `SELECT u.* FROM users u JOIN user_guild ug ON u.id = ug.user_id WHERE ug.guild_id = $1;`
+	rows, err := r.db.QueryContext(ctx, query, guildID)
+	if err != nil {
+		return nil, err
+	}
+	var users []User
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(&user.ID, &user.Username, &user.Email, &user.Password); err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return &users, nil
+}

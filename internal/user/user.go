@@ -9,6 +9,18 @@ type User struct {
 	Password string `json:"password"`
 }
 
+type GetAllUserRes struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+}
+
+func (u *User) ToGetAllUserRes() GetAllUserRes {
+	return GetAllUserRes{
+		Username: u.Username,
+		Email:    u.Email,
+	}
+}
+
 type AddUserReq struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
@@ -34,9 +46,11 @@ type LoginUserReq struct {
 type Repository interface {
 	AddUser(ctx context.Context, user *User) (*User, error)
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
+	GetAllUsersByGuildID(ctx context.Context, guildID int) (*[]User, error)
 }
 
 type Service interface {
 	AddUser(ctx context.Context, req *AddUserReq) (*AddUserRes, error)
 	Login(ctx context.Context, req *LoginUserReq) (*LoginUserRes, error)
+	GetAllUsersByGuildID(ctx context.Context, guildID int) (*[]GetAllUserRes, error)
 }
