@@ -11,7 +11,7 @@ dropdb:
 	docker exec -it postgresdisko dropdb go-chat
 
 migratecreate:
-	migrate create -ext sql -dir db/migrations add_users_table
+	migrate create -ext sql -dir db/migrations add_user_guild_table
 
 migrateup:
 	migrate -path db/migrations -database "postgresql://root:password@localhost:5432/diskoDB?sslmode=disable" -verbose up

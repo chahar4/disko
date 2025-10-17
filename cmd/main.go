@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/PatrochR/disko/db"
+	"github.com/PatrochR/disko/internal/guild"
 	"github.com/PatrochR/disko/internal/user"
 	"github.com/PatrochR/disko/router"
 	"github.com/joho/godotenv"
@@ -11,7 +12,7 @@ import (
 
 func main() {
 	err := godotenv.Load()
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 	db, err := db.NewDatabase()
@@ -24,7 +25,12 @@ func main() {
 	userService := user.NewService(userRepo)
 	userHandler := user.NewHandler(userService)
 
-	router.InitRouter(userHandler)
+	//Guild Injection
+	guildRepo := guild.NewRepository(db.GetDB())
+	guildService := guild.NewService(guildRepo)
+	guildHandler := guild.NewHandler(guildService)
+
+	router.InitRouter(userHandler, guildHandler)
 	if err := router.Start(":8080"); err != nil {
 		log.Fatal(err)
 	}
