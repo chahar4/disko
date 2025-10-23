@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/PatrochR/disko/db"
+	"github.com/PatrochR/disko/internal/channel"
 	"github.com/PatrochR/disko/internal/guild"
 	"github.com/PatrochR/disko/internal/user"
 	"github.com/PatrochR/disko/router"
@@ -30,7 +31,12 @@ func main() {
 	guildService := guild.NewService(guildRepo)
 	guildHandler := guild.NewHandler(guildService)
 
-	router.InitRouter(userHandler, guildHandler)
+	//Channel Injection
+	channelRepo := channel.NewRepository(db.GetDB())
+	channelService := channel.NewService(channelRepo)
+	channelHandler := *channel.NewHandler(channelService)
+
+	router.InitRouter(userHandler, guildHandler, &channelHandler)
 	if err := router.Start(":8080"); err != nil {
 		log.Fatal(err)
 	}
