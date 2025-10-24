@@ -6,6 +6,7 @@ import (
 	"github.com/PatrochR/disko/db"
 	"github.com/PatrochR/disko/internal/channel"
 	"github.com/PatrochR/disko/internal/guild"
+	"github.com/PatrochR/disko/internal/message"
 	"github.com/PatrochR/disko/internal/user"
 	"github.com/PatrochR/disko/router"
 	"github.com/joho/godotenv"
@@ -34,9 +35,14 @@ func main() {
 	//Channel Injection
 	channelRepo := channel.NewRepository(db.GetDB())
 	channelService := channel.NewService(channelRepo)
-	channelHandler := *channel.NewHandler(channelService)
+	channelHandler := channel.NewHandler(channelService)
 
-	router.InitRouter(userHandler, guildHandler, &channelHandler)
+	//Channel Injection
+	messageRepo := message.NewRepository(db.GetDB())
+	messageService := message.NewService(messageRepo)
+	messageHandler := message.NewHandler(messageService)
+
+	router.InitRouter(userHandler, guildHandler, channelHandler, messageHandler)
 	if err := router.Start(":8080"); err != nil {
 		log.Fatal(err)
 	}
