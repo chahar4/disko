@@ -24,7 +24,6 @@ func InitRouter(
 	r.GET("/guild/:userid", guildHandler.GetAllGuildsByUserID)
 
 	r.GET("/guild/add", guildHandler.AddUserToGuild)
-
 	r.POST("/channel", channelHandler.AddChannel)
 }
 
