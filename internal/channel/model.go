@@ -1,6 +1,12 @@
-package message
+package channel
 
 import "context"
+
+type Channel struct {
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	GuildID int    `json:"guild_id"`
+}
 
 type Message struct {
 	ID         int    `json:"id"`
@@ -8,12 +14,24 @@ type Message struct {
 	Author_ID  int    `json:"author_id"`
 	Content    string `json:"content"`
 }
+type AddChannelReq struct {
+	Name    string `json:"name"`
+	GuildID int    `json:"guild_id"`
+}
+
+type AddChannelRes struct {
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	GuildID int    `json:"guild_id"`
+}
 
 type Repository interface {
+	AddChannel(ctx context.Context, channel *Channel) (*Channel, error)
 	AddMessage(ctx context.Context, message *Message) (*Message, error)
 }
 
 type Service interface {
+	AddGuild(ctx context.Context, req *AddChannelReq) (*AddChannelRes, error)
 	AddMessage(ctx context.Context, req *AddMessageReq) (*AddMessageRes, error)
 }
 

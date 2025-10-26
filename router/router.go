@@ -3,7 +3,6 @@ package router
 import (
 	"github.com/PatrochR/disko/internal/channel"
 	"github.com/PatrochR/disko/internal/guild"
-	"github.com/PatrochR/disko/internal/message"
 	"github.com/PatrochR/disko/internal/user"
 	"github.com/gin-gonic/gin"
 )
@@ -13,8 +12,7 @@ var r *gin.Engine
 func InitRouter(
 	userHandler *user.Handler,
 	guildHandler *guild.Handler,
-	channelHandler *channel.Handler,
-	messageHandler *message.Handler) {
+	channelHandler *channel.Handler) {
 	r = gin.Default()
 
 	r.POST("/user/register", userHandler.Register)
@@ -28,8 +26,6 @@ func InitRouter(
 	r.GET("/guild/add", guildHandler.AddUserToGuild)
 
 	r.POST("/channel", channelHandler.AddChannel)
-
-	r.POST("/message", messageHandler.AddMessage)
 }
 
 func Start(adder string) error {

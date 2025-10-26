@@ -33,3 +33,14 @@ func (r *repository) AddChannel(ctx context.Context, channel *Channel) (*Channel
 	channel.ID = lastInsertChannelId
 	return channel, nil
 }
+
+func (r *repository) AddMessage(ctx context.Context, message *Message) (*Message, error) {
+	query := "INSERT INTO message (author_id,channel_id,content) VALUES ($1,$2,$3)"
+	var lastMessageInserted int
+	err := r.db.QueryRowContext(ctx, query).Scan(&lastMessageInserted)
+	if err != nil {
+		return nil, err
+	}
+	message.ID = lastMessageInserted
+	return message, nil
+}

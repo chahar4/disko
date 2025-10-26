@@ -1,4 +1,4 @@
-package message
+package channel
 
 import (
 	"net/http"
@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Handler struct {
+type MessageHandler struct {
 	service Service
 }
 
-func NewHandler(service Service) *Handler {
+func NewmessageHandler(service Service) *Handler {
 	return &Handler{
 		service: service,
 	}
