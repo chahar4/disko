@@ -17,10 +17,16 @@ func NewHandler(service Service) *Handler {
 }
 
 func (h *Handler) AddChannel(c *gin.Context) {
-	var req AddChannelReq
-	if err := c.ShouldBindJSON(&req); err != nil {
+	param := c.Param("guild_id")
+	var nameReq string
+	if err := c.ShouldBindJSON(&nameReq); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	req := AddChannelReq{
+		Name:    nameReq,
+		GuildID: param,
 	}
 
 	res, err := h.service.AddGuild(c.Request.Context(), &req)

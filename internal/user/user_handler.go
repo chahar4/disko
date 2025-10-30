@@ -58,7 +58,7 @@ func (h *Handler) Login(c *gin.Context) {
 }
 
 func (h *Handler) GetAllUsersByGuildID(c *gin.Context) {
-	guildID_param := c.Param("guildid")
+	guildID_param := c.Param("guild_id")
 	guildID, err := strconv.Atoi(guildID_param)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

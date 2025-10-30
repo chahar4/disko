@@ -11,7 +11,7 @@ type Channel struct {
 
 type AddChannelReq struct {
 	Name    string `json:"name"`
-	GuildID int    `json:"guild_id"`
+	GuildID string `json:"guild_id"`
 }
 
 type AddChannelRes struct {

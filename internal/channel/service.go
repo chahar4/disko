@@ -2,6 +2,7 @@ package channel
 
 import (
 	"context"
+	"strconv"
 	"time"
 )
 
@@ -21,9 +22,14 @@ func (s *service) AddGuild(ctx context.Context, req *AddChannelReq) (*AddChannel
 	c, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
 
+	guildId, err := strconv.Atoi(req.GuildID)
+	if err != nil {
+		return nil, err
+	}
+
 	channel := Channel{
 		Name:    req.Name,
-		GuildID: req.GuildID,
+		GuildID: guildId,
 	}
 
 	res, err := s.repository.AddChannel(c, &channel)

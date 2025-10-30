@@ -33,7 +33,7 @@ func (h *Handler) AddGuild(c *gin.Context) {
 }
 
 func (h *Handler) GetAllGuildsByUserID(c *gin.Context) {
-	param := c.Param("userid")
+	param := c.Param("user_id")
 
 	userID, err := strconv.Atoi(param)
 	if err != nil {
@@ -50,14 +50,14 @@ func (h *Handler) GetAllGuildsByUserID(c *gin.Context) {
 }
 
 func (h *Handler) AddUserToGuild(c *gin.Context) {
+	guild_param := c.Param("guild_id")
 	userid_param := c.Query("userid")
-	guildid_param := c.Query("guildid")
 	userID, err := strconv.Atoi(userid_param)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	guildID, err := strconv.Atoi(guildid_param)
+	guildID, err := strconv.Atoi(guild_param)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

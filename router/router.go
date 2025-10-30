@@ -16,20 +16,20 @@ func InitRouter(
 	channelHandler *channel.Handler) {
 	r = gin.Default()
 
-	api :=r.Group("/api/v1")
+	api := r.Group("/api/v1")
 
-	api.POST("/user/register", userHandler.Register)
-	api.POST("/user/login", userHandler.Login)
+	api.POST("/auth/register", userHandler.Register)
+	api.POST("/auth/login", userHandler.Login)
 
 	authorized := api.Group("/")
 	authorized.Use(middleware.JwtAuth())
 
+	authorized.GET("/guilds/:guild_id/users", userHandler.GetAllUsersByGuildID)
+	authorized.POST("/guilds", guildHandler.AddGuild)
+	authorized.GET("/users/:user_id/guilds", guildHandler.GetAllGuildsByUserID)
+	authorized.GET("/guilds/:guild_id/members", guildHandler.AddUserToGuild)
+	authorized.POST("/guilds/:gulid_id/channels", channelHandler.AddChannel)
 
-	authorized.GET("/user/:guildid", userHandler.GetAllUsersByGuildID)
-	authorized.POST("/guild", guildHandler.AddGuild)
-	authorized.GET("/guild/:userid", guildHandler.GetAllGuildsByUserID)
-	authorized.GET("/guild/add", guildHandler.AddUserToGuild)
-	authorized.POST("/channel", channelHandler.AddChannel)
 }
 
 func Start(adder string) error {
