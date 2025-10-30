@@ -47,18 +47,14 @@ func (h *Handler) Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.SetCookie("jwt", res.accessToken, 3600, "/", "localhost", false, true)
+
+	c.Header("Authorization", res.accessToken)
 
 	r := LoginUserRes{
 		ID:       res.ID,
 		Username: res.Username,
 	}
 	c.JSON(http.StatusOK, r)
-}
-
-func (h *Handler) Logout(c *gin.Context) {
-	c.SetCookie("jwt", "", -1, "", "", false, true)
-	c.JSON(http.StatusOK, gin.H{"message": "logout successful"})
 }
 
 func (h *Handler) GetAllUsersByGuildID(c *gin.Context) {
@@ -76,6 +72,6 @@ func (h *Handler) GetAllUsersByGuildID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK , res)
+	c.JSON(http.StatusOK, res)
 
 }

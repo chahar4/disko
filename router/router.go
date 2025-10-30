@@ -4,6 +4,7 @@ import (
 	"github.com/PatrochR/disko/internal/channel"
 	"github.com/PatrochR/disko/internal/guild"
 	"github.com/PatrochR/disko/internal/user"
+	"github.com/PatrochR/disko/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,16 +16,20 @@ func InitRouter(
 	channelHandler *channel.Handler) {
 	r = gin.Default()
 
-	r.POST("/user/register", userHandler.Register)
-	r.POST("/user/login", userHandler.Login)
+	api :=r.Group("/api/v1")
 
-	r.GET("/user/:guildid", userHandler.GetAllUsersByGuildID)
+	api.POST("/user/register", userHandler.Register)
+	api.POST("/user/login", userHandler.Login)
 
-	r.POST("/guild", guildHandler.AddGuild)
-	r.GET("/guild/:userid", guildHandler.GetAllGuildsByUserID)
+	authorized := api.Group("/")
+	authorized.Use(middleware.JwtAuth())
 
-	r.GET("/guild/add", guildHandler.AddUserToGuild)
-	r.POST("/channel", channelHandler.AddChannel)
+
+	authorized.GET("/user/:guildid", userHandler.GetAllUsersByGuildID)
+	authorized.POST("/guild", guildHandler.AddGuild)
+	authorized.GET("/guild/:userid", guildHandler.GetAllGuildsByUserID)
+	authorized.GET("/guild/add", guildHandler.AddUserToGuild)
+	authorized.POST("/channel", channelHandler.AddChannel)
 }
 
 func Start(adder string) error {
