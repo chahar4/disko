@@ -16,7 +16,7 @@ func NewmessageHandler(service Service) *Handler {
 	}
 }
 
-func (h *Handler) AddMessage(c *gin.Context) {
+func (h *Handler) SendMessage(c *gin.Context) {
 	var req AddMessageReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
