@@ -18,13 +18,29 @@ func NewHandler(service Service) *Handler {
 }
 
 func (h *Handler) AddGuild(c *gin.Context) {
-	var req AddGuildReq
+	var req struct {
+		Name string `json:"name"`
+	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	ownerID, ok := c.Get("userID")
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+	ownerIDInt, err := strconv.Atoi(ownerID.(string))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	addGuildReq := AddGuildReq{
+		Name:     req.Name,
+		OwenerID: ownerIDInt,
+	}
 
-	res, err := h.service.AddGuild(c.Request.Context(), &req)
+	res, err := h.service.AddGuild(c.Request.Context(), &addGuildReq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -51,7 +67,7 @@ func (h *Handler) GetAllGuildsByUserID(c *gin.Context) {
 
 func (h *Handler) AddUserToGuild(c *gin.Context) {
 	guild_param := c.Param("guild_id")
-	userid_param := c.Query("userid")
+	userid_param := c.Query("user_id")
 	userID, err := strconv.Atoi(userid_param)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
