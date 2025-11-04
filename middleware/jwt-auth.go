@@ -13,11 +13,11 @@ import (
 func JwtAuth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		header := ctx.GetHeader("Authorization")
-		trimHeader := strings.TrimPrefix(header , "Bearer ")
+		trimHeader := strings.TrimPrefix(header, "Bearer ")
 
 		secretKey := os.Getenv("SECRET_KEY")
-		token, err := jwt.Parse(trimHeader, func(t *jwt.Token) (any, error) {
-			return secretKey, nil
+		token, err := jwt.ParseWithClaims(trimHeader, &user.CustomeClaim{}, func(t *jwt.Token) (any, error) {
+			return []byte(secretKey), nil
 		})
 		if err != nil || !token.Valid {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error ": "Unauthorized"})
@@ -25,15 +25,15 @@ func JwtAuth() gin.HandlerFunc {
 			return
 		}
 
-		claims, ok := token.Claims.(user.CustomeClaim)
+		claims, ok := token.Claims.(*user.CustomeClaim)
 		if !ok {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error ": "Unauthorized"})
 			ctx.Abort()
 			return
 		}
 
-		ctx.Set("userID" , claims.ID)
-		ctx.Set("username" , claims.Username)
+		ctx.Set("userID", claims.ID)
+		ctx.Set("username", claims.Username)
 
 		ctx.Next()
 	}
