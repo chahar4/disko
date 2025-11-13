@@ -42,11 +42,17 @@ type AddMessageRes struct {
 
 // interfaces
 type Repository interface {
+	GetChannelsByGuildID(ctx context.Context, guildID int) (*[]Channel, error)
 	AddChannel(ctx context.Context, channel *Channel) (*Channel, error)
 	AddMessage(ctx context.Context, message *Message) (*Message, error)
 }
 
 type Service interface {
-	AddGuild(ctx context.Context, req *AddChannelReq) (*AddChannelRes, error)
+	GetChannelsByGuildID(ctx context.Context, guildID int) (*[]Channel, error)
+	AddChannel(ctx context.Context, req *AddChannelReq) (*AddChannelRes, error)
 	AddMessage(ctx context.Context, req *AddMessageReq) (*AddMessageRes, error)
+}
+
+type Broadcaster interface {
+	BroadcasterMessage(payload []byte, roomID string)
 }

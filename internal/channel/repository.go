@@ -22,6 +22,23 @@ func NewRepository(db DBTX) Repository {
 	}
 }
 
+func (r *repository) GetChannelsByGuildID(ctx context.Context, guildID int) (*[]Channel, error) {
+	query := "SELECT * FROM channels WHERE guild_id = $1"
+	rows, err := r.db.QueryContext(ctx, query, guildID)
+	if err != nil {
+		return nil, err
+	}
+	var channels []Channel
+	for rows.Next() {
+		var channel Channel
+		if err := rows.Scan(&channel.ID, &channel.Name, &channel.GuildID); err != nil {
+			return nil, err
+		}
+		channels = append(channels, channel)
+	}
+	return &channels, nil
+}
+
 func (r *repository) AddChannel(ctx context.Context, channel *Channel) (*Channel, error) {
 	query := "INSERT INTO channels(name , guild_id) VALUES ($1 ,$2) returning id"
 

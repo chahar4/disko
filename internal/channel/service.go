@@ -2,6 +2,7 @@ package channel
 
 import (
 	"context"
+	"log"
 	"strconv"
 	"time"
 )
@@ -18,10 +19,11 @@ func NewService(repository Repository) Service {
 	}
 }
 
-func (s *service) AddGuild(ctx context.Context, req *AddChannelReq) (*AddChannelRes, error) {
+func (s *service) AddChannel(ctx context.Context, req *AddChannelReq) (*AddChannelRes, error) {
 	c, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
 
+	log.Println(req.GuildID)
 	guildId, err := strconv.Atoi(req.GuildID)
 	if err != nil {
 		return nil, err
@@ -63,4 +65,16 @@ func (s *service) AddMessage(ctx context.Context, req *AddMessageReq) (*AddMessa
 		Channel_ID: res.Channel_ID,
 		Content:    res.Content,
 	}, nil
+}
+
+func (s *service) GetChannelsByGuildID(ctx context.Context, guildID int) (*[]Channel, error) {
+	c, cancel := context.WithTimeout(ctx, s.timeout)
+	defer cancel()
+
+	res, err := s.repository.GetChannelsByGuildID(c, guildID)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }

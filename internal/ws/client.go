@@ -2,7 +2,6 @@ package ws
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/gorilla/websocket"
 )
@@ -22,24 +21,37 @@ type Message struct {
 
 func (c *Client) WriteMessage() {
 	defer func() {
+		c.hub.Unregister <- c
 		c.Conn.Close()
 		close(c.Send)
 	}()
 	for {
 		_, msg, err := c.Conn.ReadMessage()
 		if err != nil {
-			log.Println(err)
 			break
 		}
 		var input Message
 		if err := json.Unmarshal(msg, &input); err != nil {
-			log.Println(err)
 			continue
 		}
 		if _, ok := c.Rooms[input.roomID]; !ok {
-			log.Println("client is not in channel")
 			continue
 		}
-		c.hub.Broadcast <- input
+		c.hub.Broadcast <- &input
+	}
+}
+
+func (c *Client) ReadMessage() {
+	defer func() {
+		c.Conn.Close()
+	}()
+
+	for {
+		msg, ok := <-c.Send
+		if !ok {
+			return
+		}
+
+		c.Conn.WriteJSON(msg)
 	}
 }
