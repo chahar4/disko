@@ -15,7 +15,6 @@ func InitRouter(
 	userHandler *user.Handler,
 	guildHandler *guild.Handler,
 	channelHandler *channel.Handler,
-	messageHandler *channel.MessageHandler,
 	wsHandler *ws.Handler) {
 	r = gin.Default()
 
@@ -35,7 +34,7 @@ func InitRouter(
 	authorized.GET("/guilds/:guild_id/members", guildHandler.AddUserToGuild)
 	authorized.POST("/guilds/:guild_id/channels", channelHandler.AddChannel)
 
-	api.POST("/message", messageHandler.SendMessage)
+	api.POST("/message", channelHandler.SendMessage)
 
 }
 

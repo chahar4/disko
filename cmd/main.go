@@ -22,6 +22,11 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	//ws
+	hub := ws.NewHub()
+	go hub.Run()
+
+
 	// User Injection
 	userRepo := user.NewRepository(db.GetDB())
 	userService := user.NewService(userRepo)
@@ -35,16 +40,12 @@ func main() {
 	//Channel Injection
 	channelRepo := channel.NewRepository(db.GetDB())
 	channelService := channel.NewService(channelRepo)
-	channelHandler := channel.NewHandler(channelService)
+	channelHandler := channel.NewHandler(channelService , hub)
 
-	//ws
-	hub := ws.NewHub()
-	go hub.Run()
+
 	wsHandler := ws.NewHandler(hub, guildService, channelService)
 
-	messageHandler := channel.NewMessageHandler(channelService, hub)
-
-	router.InitRouter(userHandler, guildHandler, channelHandler, messageHandler, wsHandler)
+	router.InitRouter(userHandler, guildHandler, channelHandler, wsHandler)
 	if err := router.Start(":8080"); err != nil {
 		log.Fatal(err)
 	}
