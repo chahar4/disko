@@ -33,6 +33,6 @@ func (h *MessageHandler) SendMessage(c *gin.Context) {
 	//	return
 	//}
 
-	c.JSON(http.StatusOK, "d")
+	c.JSON(http.StatusOK, "send")
 
 }

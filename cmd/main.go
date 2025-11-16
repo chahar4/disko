@@ -39,6 +39,7 @@ func main() {
 
 	//ws
 	hub := ws.NewHub()
+	go hub.Run()
 	wsHandler := ws.NewHandler(hub, guildService, channelService)
 
 	messageHandler := channel.NewMessageHandler(channelService, hub)

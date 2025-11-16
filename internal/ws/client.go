@@ -2,6 +2,7 @@ package ws
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/gorilla/websocket"
 )
@@ -51,7 +52,12 @@ func (c *Client) ReadMessage() {
 		if !ok {
 			return
 		}
+		log.Println(msg)
+		log.Println("message send to all client")
 
-		c.Conn.WriteJSON(msg)
+		err :=c.Conn.WriteMessage(websocket.TextMessage , msg)
+		if err!= nil{
+			return
+		}
 	}
 }

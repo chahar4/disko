@@ -104,5 +104,5 @@ func (h *Handler) OpenWS(c *gin.Context) {
 	}
 
 	h.hub.Register <- &client
-	client.WriteMessage()
+	client.ReadMessage()
 }
