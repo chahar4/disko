@@ -21,7 +21,7 @@ func InitRouter(
 	api := r.Group("/api/v1")
 
 	api.POST("/auth/register", userHandler.Register)
-	api.POST("/auth/login", userHandler.Login)
+	api.POST("/auth/login",userHandler.Login)
 
 	api.GET("/ws", wsHandler.OpenWS)
 

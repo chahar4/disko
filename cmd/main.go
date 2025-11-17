@@ -9,6 +9,7 @@ import (
 	"github.com/PatrochR/disko/internal/user"
 	"github.com/PatrochR/disko/internal/ws"
 	"github.com/PatrochR/disko/router"
+	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 )
 
@@ -21,6 +22,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	validator := validator.New()
 
 	//ws
 	hub := ws.NewHub()
@@ -30,7 +32,7 @@ func main() {
 	// User Injection
 	userRepo := user.NewRepository(db.GetDB())
 	userService := user.NewService(userRepo)
-	userHandler := user.NewHandler(userService)
+	userHandler := user.NewHandler(userService,  validator)
 
 	//Guild Injection
 	guildRepo := guild.NewRepository(db.GetDB())

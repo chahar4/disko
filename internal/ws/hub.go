@@ -1,6 +1,5 @@
 package ws
 
-import "log"
 
 type Hub struct {
 	Clients    map[string]*Client
@@ -26,7 +25,6 @@ func (h *Hub) BroadcasterMessage(payload []byte, roomID string) {
 		Payload: payload,
 	}
 	h.Broadcast <- &msg
-	log.Println("message broadcasted")
 }
 
 func (h *Hub) Run() {
@@ -54,11 +52,8 @@ func (h *Hub) Run() {
 			close(cli.Send)
 
 		case msg := <-h.Broadcast:
-		    log.Println("in broadcast")
-		    log.Println(msg)
 			if _, ok := h.Rooms[msg.roomID]; ok {
 				for cli := range h.Rooms[msg.roomID] {
-					log.Println("message send to all client by broadcast")
 					cli.Send <- msg.Payload
 				}
 			}
