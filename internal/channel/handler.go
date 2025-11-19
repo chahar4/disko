@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/PatrochR/disko/util"
 	"github.com/gin-gonic/gin"
 )
 
@@ -59,4 +60,22 @@ func (h *Handler) SendMessage(c *gin.Context) {
 
 	c.JSON(http.StatusOK, "send")
 
+}
+
+func (h *Handler) GetAllChannelByGuildID(c *gin.Context) {
+	guildParam := c.Param("guild_id")
+
+	guildID ,err := strconv.Atoi(guildParam)
+	if err!= nil{
+		c.JSON(http.StatusBadRequest, gin.H{"error": util.BadRequestErrorMessage})
+		return
+	}
+
+	channels , err:=h.service.GetChannelsByGuildID(c.Request.Context() , guildID)
+	if err!= nil{
+		c.JSON(http.StatusBadRequest, gin.H{"error": util.InternalServerErrorMessage})
+		return
+	}
+
+	c.JSON(http.StatusOK , channels)
 }

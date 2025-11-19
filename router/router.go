@@ -31,6 +31,7 @@ func InitRouter(
 	authorized.GET("/guilds/:guild_id/users", userHandler.GetAllUsersByGuildID)
 	authorized.POST("/guilds", guildHandler.AddGuild)
 	authorized.GET("/users/:user_id/guilds", guildHandler.GetAllGuildsByUserID)
+	authorized.GET("/guilds/:guild_id/channels", channelHandler.GetAllChannelByGuildID)
 	authorized.GET("/guilds/:guild_id/members", guildHandler.AddUserToGuild)
 	authorized.POST("/guilds/:guild_id/channels", channelHandler.AddChannel)
 
